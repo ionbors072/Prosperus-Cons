@@ -2,9 +2,8 @@ const express = require('express');
 const db      = require('../config/db');
 const router  = express.Router();
 
-// GET /api/users — lista utilizatori (fara parola)
-router.get('/', async (req, res) => {
-    const [rows] = await db.execute('SELECT id,name,email,role,spec,phone FROM users');
+router.get('/', (req, res) => {
+    const rows = db.prepare('SELECT id,name,email,role,spec,phone FROM users').all();
     res.json({ users: rows });
 });
 

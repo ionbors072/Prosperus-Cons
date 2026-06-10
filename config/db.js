@@ -1,13 +1,32 @@
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+const Database = require('better-sqlite3');
+const path = require('path');
 
-const pool = mysql.createPool({
-    host:     process.env.DB_HOST,
-    user:     process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10
-});
+const db = new Database(path.join(__dirname, '..', 'database.db'));
 
-module.exports = pool;
+// Creare tabele daca nu exista
+db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT DEFAULT 'client',
+        spec TEXT,
+        phone TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS contracts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        client_id INTEGER,
+        client_email TEXT,
+        name TEXT,
+        address TEXT,
+        type TEXT,
+        price TEXT,
+        status TEXT,
+        eta TEXT,
+        progress INTEGER DEFAULT 0
+    );
+`);
+
+module.exports = db;
