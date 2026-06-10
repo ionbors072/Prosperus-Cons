@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Servire fișiere statice (frontend)
-app.use(express.static(path.join(__dirname, 'frontend')));
+app.use(express.static(__dirname));
 
 // Rute API
 app.use('/api/auth', require('./routes/auth'));
