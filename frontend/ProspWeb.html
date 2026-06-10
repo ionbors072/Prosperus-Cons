@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prosperus-Cons | Panou Management Rețele Hidrice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="ProspWeb.css">
+    <!-- Prosperus-Cons FINAL -->
+</head>
+<body>
+
+    <div id="public-platform">
+        <nav class="public-navbar">
+            <a class="brand" onclick="checkSecretAdminAccess(event)">
+                <i class="fa-solid fa-helmet-safety"></i> Prosperus-<span>Cons</span>
+            </a>
+            <ul class="nav-links">
+                <li><a id="link-home" onclick="navigateTo('home')" class="active">Acasă</a></li>
+                <li><a id="link-servicii" onclick="navigateTo('servicii')">Servicii Apă</a></li>
+                <li><a id="link-contract" onclick="navigateTo('contract')">Ghid & Contractare</a></li>
+                <li><a id="link-auth" onclick="handleAuthNavButtonClick()" class="btn-nav-action"><i class="fa-solid fa-user-gear"></i> <span id="nav-auth-text">Contul Meu</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- ACASĂ -->
+        <section id="page-home" class="page-section active-page">
+            <div class="hero-banner">
+                <h1>Infrastructură Hidrotehnică și <br><span>Branșamente Profesionale</span></h1>
+                <p>Proiectăm, executăm excavări și punem în funcțiune rețele magistrale de apă potabilă și sisteme industriale de canalizare cu autorizație completă.</p>
+                <button class="btn-action btn-orange" onclick="navigateTo('contract')">Iniciază Proiect Online <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div class="container">
+                <div class="home-stats-bar">
+                    <div class="home-stat-item"><h3>120+ km</h3><p>Conducte Magistrale Montate</p></div>
+                    <div class="home-stat-item"><h3>1,420+</h3><p>Branșamente Avizate și Active</p></div>
+                    <div class="home-stat-item"><h3>0</h3><p>Incidente Tehnice sau Pierderi</p></div>
+                    <div class="home-stat-item"><h3>100%</h3><p>Conformitate Regie și Inspectorat</p></div>
+                </div>
+
+                <h2 class="section-heading">Ce Oferim <span>Infrastructură Premium</span></h2>
+                <p class="section-subtitle">Sisteme moderne integrate, proiectate să reziste peste 50 de ani fără intervenții.</p>
+
+                <div class="grid-3" style="margin-bottom: 60px;">
+                    <div class="pub-card">
+                        <i class="fa-solid fa-faucet-drip"></i>
+                        <h3>Siguranță Potabilă</h3>
+                        <p>Utilizăm exclusiv conducte PEHD de înaltă densitate PN16, rezistente la presiuni mari și complet inerte chimic pentru calitatea pură a apei.</p>
+                    </div>
+                    <div class="pub-card">
+                        <i class="fa-solid fa-temperature-arrow-down"></i>
+                        <h3>Cămine Geotermale</h3>
+                        <p>Cămine de apometru izolate termic prin injectare de poliuretan. Previn înghețul echipamentelor chiar și la temperaturi de sub -25°C.</p>
+                    </div>
+                    <div class="pub-card">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <h3>Garanție Extinsă</h3>
+                        <p>Fiecare branșament mecanic realizat beneficiază de monitorizare computerizată la presiune și proces-verbal oficial cu garanție de 10 ani.</p>
+                    </div>
+                </div>
+
+                <h2 class="section-heading">Cum Lucrăm <span>Etapele Tehnice</span></h2>
+                <p class="section-subtitle">Garantăm un flux transparent și rapid, minimizând disconfortul și birocrația.</p>
+
+                <div class="workflow-container">
+                    <div class="workflow-step">
+                        <div class="workflow-num">01</div>
+                        <h4>Studiu de Fezabilitate</h4>
+                        <p>Inginerii noștri scanează terenul pentru identificarea rețelelor subterane existente și realizează ridicarea topografică.</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-num">02</div>
+                        <h4>Avizare & Proiect</h4>
+                        <p>Întocmim documentația tehnică completă și obținem avizele de la Regia Autonomă de Apă în timp record, fără deplasări din partea ta.</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-num">03</div>
+                        <h4>Săpătură & Montaj</h4>
+                        <p>Echipele noastre intervin cu utilaje moderne de excavare sau echipamente de foraj orizontal dirijat (fără spargerea asfaltului).</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-num">04</div>
+                        <h4>Probe de Presiune</h4>
+                        <p>Instalația este spălată, igienizată, testată la presiune hidraulică nominală și conectată definitiv la magistrala centrală.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICII APĂ -->
+        <section id="page-servicii" class="page-section">
+            <h2 class="section-heading">Servicii Avansate de Infrastructură</h2>
+            <p class="section-subtitle">Soluții tehnice autorizate destinate clienților rezidențiali, comerciali și industriali.</p>
+            <div class="grid-3">
+                <div class="pub-card">
+                    <i class="fa-solid fa-pipe-valve"></i>
+                    <h3>Subtraversări Drumuri</h3>
+                    <p>Foraj orizontal dirijat și percuție pentru pozarea conductelor pe sub drumuri naționale, județene sau căi ferate, eliminând complet necesitatea decopertării asfaltului.</p>
+                </div>
+                <div class="pub-card">
+                    <i class="fa-solid fa-industry"></i>
+                    <h3>Rețele Industriale</h3>
+                    <p>Aducțiuni și magistrale de mari dimensiuni (Ø 110mm - Ø 315mm) special optimizate pentru parcuri logistice, fabrici, hidranți de incendiu și ansambluri rezidențiale.</p>
+                </div>
+                <div class="pub-card">
+                    <i class="fa-solid fa-droplet"></i>
+                    <h3>Sisteme de Pompare</h3>
+                    <p>Montaj și calibrare stații de repompare a apei, bazine de stocare tampon și sisteme hidrofoare de mare putere pentru zonele cu presiune scăzută în rețea.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GHID & CONTRACTARE -->
+        <section id="page-contract" class="page-section">
+            <h2 class="section-heading">Configurator Proiect Tehnic Online</h2>
+            <p class="section-subtitle">Calculează devizul și deschide dosarul tehnic direct din platformă.</p>
+            <div class="contract-card">
+                <div id="contract-security-notice" class="lock-notice">
+                    <i class="fa-solid fa-lock"></i> Neautorizat! Trebuie să fii înregistrat sau conectat într-un cont pentru a putea transmite un dosar tehnic valid.
+                </div>
+                <form id="publicContractForm" onsubmit="submitOnlineContract(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div class="form-control"><label>Nume Beneficiar</label><input type="text" id="c_nume" required></div>
+                        <div class="form-control"><label>Cod Personal / CUI</label><input type="text" id="c_id" required></div>
+                    </div>
+                    <div class="form-control"><label>Adresă Obiectiv / Șantier</label><input type="text" id="c_adresa" required></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div class="form-control">
+                            <label>Tip Lucrare</label>
+                            <select id="c_tip" onchange="updatePriceCalculator()">
+                                <option value="apa">Branșament Apă Potabilă Standard</option>
+                                <option value="canal">Canalizare Gravitațională</option>
+                                <option value="pachet">Pachet Complet (Apă + Canalizare)</option>
+                            </select>
+                        </div>
+                        <div class="form-control"><label>Lungime Traseu (Metri)</label><input type="number" id="c_lungime" value="12" min="1" oninput="updatePriceCalculator()"></div>
+                    </div>
+                    <div class="calc-output-box">
+                        <p style="font-weight:700; color:#15803d;"><i class="fa-solid fa-calculator"></i> Deviz Estimativ Materiale & Manoperă:</p>
+                        <span id="c_total_pret">1340 EUR</span>
+                    </div>
+                    <button type="submit" class="btn-action btn-orange" style="width: 100%; justify-content: center;"><i class="fa-solid fa-file-contract"></i> Transmite Fișa la Departamentul Tehnic</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAGINA DE AUTENTIFICARE / ÎNREGISTRARE -->
+        <section id="page-auth" class="page-section">
+            <div class="auth-box">
+                <div id="auth-state-status-block" style="display: none;"></div>
+
+                <!-- Butoane rapide: client + 3 lucrători (din versiunea a) -->
+                <div class="quick-login-container" id="quick-login-area" style="display:none;">
+                    <p><i class="fa-solid fa-bolt" style="color: var(--sidebar-active);"></i> Autentificare Rapidă Testare:</p>
+                    <div class="quick-buttons">
+                        <button onclick="quickLogin('client')" class="btn-action btn-green" style="padding: 6px 15px; font-size: 0.85rem;"><i class="fa-solid fa-user"></i> Ca Client</button>
+                        <button onclick="quickLogin('andrei_v')" class="btn-action btn-blue" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fa-solid fa-hammer"></i> Vasile</button>
+                        <button onclick="quickLogin('ion_g')" class="btn-action btn-blue" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fa-solid fa-truck-field"></i> Ion G.</button>
+                        <button onclick="quickLogin('mihai_s')" class="btn-action btn-blue" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fa-solid fa-wrench"></i> Mihai</button>
+                    </div>
+                </div>
+
+                <div class="auth-tabs" id="auth-tabs-navigation">
+                    <div id="tab-login" class="auth-tab active-tab" onclick="switchAuthTab('login')">Autentificare</div>
+                    <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Înregistrare</div>
+                </div>
+                <form id="form-auth-login" onsubmit="handleUserLogin(event)">
+                    <div class="form-control"><label>Email</label><input type="email" id="login_email" required placeholder="client@exemplu.com"></div>
+                    <div class="form-control"><label>Parolă</label><input type="password" id="login_pass" required value="123456"></div>
+                    <button type="submit" class="btn-action" style="width:100%; justify-content: center;">Conectare Securizată</button>
+                </form>
+                <form id="form-auth-register" onsubmit="handleUserRegister(event)" style="display: none;">
+                    <div class="form-control"><label>Nume Complet</label><input type="text" id="reg_name" required></div>
+                    <div class="form-control"><label>Email</label><input type="email" id="reg_email" required></div>
+                    <div class="form-control">
+                        <label>Tip Profil</label>
+                        <select id="reg_role">
+                            <option value="client">Beneficiar / Client Lucrare</option>
+                            <option value="lucrator">Lucrător / Echipă Teren</option>
+                        </select>
+                    </div>
+                    <div class="form-control"><label>Număr de Telefon</label><input type="tel" id="reg_phone" placeholder="Ex: +373 69 123 456" pattern="^\+?[0-9\s\-]{7,20}$" title="Număr valid: +373 69 123 456"></div>
+                    <div class="form-control"><label>Parolă Nouă</label><input type="password" id="reg_pass" required></div>
+                    <button type="submit" class="btn-orange btn-action" style="width:100%; justify-content: center;">Creează Cont</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- --- PRIVATE DASHBOARD --- -->
+    <div id="private-dashboard" class="dashboard-body">
+        <aside class="dashboard-sidebar">
+            <div>
+                <div class="db-brand"><i class="fa-solid fa-helmet-safety" style="color:var(--sidebar-active);"></i> Prosperus-Cons</div>
+                <ul class="db-menu">
+                    <li class="active"><a href="#"><i class="fa-solid fa-chart-line"></i> Monitorizare Panou</a></li>
+                </ul>
+            </div>
+            <div style="padding: 20px;"><button class="btn-action btn-orange" style="width: 100%; justify-content: center;" onclick="logoutSession()"><i class="fa-solid fa-power-off"></i> Deconectare</button></div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="db-header">
+                <div>
+                    <h1 id="db-user-title">Panou Personal</h1>
+                    <p id="db-user-subtitle" style="color: var(--text-muted); font-size: 0.95rem;">-</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <span id="db-user-name" style="font-weight: 700; display: block;">-</span>
+                        <small id="db-user-role" style="color: var(--text-muted); font-size: 0.8rem;">-</small>
+                    </div>
+                    <i class="fa-solid fa-user-gear" style="font-size: 2rem; color: #1e293b;"></i>
+                </div>
+            </header>
+
+            <!-- VIZUALIZARE CLIENT -->
+            <div id="view-client-zone" style="display: none;">
+                <div class="progress-container">
+                    <h3 style="margin-bottom: 5px;">Progres Tehnic Execuție</h3>
+                    <div class="progress-bar-bg"><div id="client-progress-bar" class="progress-bar-fill"></div></div>
+                    <div class="step-indicator-grid">
+                        <span id="step-1">1. Proiectare</span>
+                        <span id="step-2">2. Avizare Regie</span>
+                        <span id="step-3">3. Săpătură/Montaj</span>
+                        <span id="step-4">4. Probe Presiune</span>
+                    </div>
+                </div>
+                <div class="info-card-grid">
+                    <div class="info-block">
+                        <h3><i class="fa-solid fa-file-contract" style="color: var(--sidebar-active);"></i> Date Dosar Tehnic</h3>
+                        <div class="info-row"><span>Beneficiar Contract:</span><span id="info-det-nume">-</span></div>
+                        <div class="info-row"><span>Adresă Amplasament:</span><span id="info-det-adresa">-</span></div>
+                        <div class="info-row"><span>Tip Configurație Rețea:</span><span id="info-det-tip">-</span></div>
+                        <div class="info-row"><span>Valoare Totală Deviz:</span><span id="info-det-pret">-</span></div>
+                    </div>
+                    <div class="info-block">
+                        <h3><i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> Informații Șantier & Estimări</h3>
+                        <div class="info-row"><span>Stadiu Curent:</span><span id="info-det-status" style="color: var(--sidebar-active);">-</span></div>
+                        <div class="info-row"><span>Termen Mediu Predare:</span><span id="info-det-eta" style="color: var(--success);">-</span></div>
+                        <div class="info-row"><span>Responsabil Tehnic:</span><span>Ing. Borș Ion</span></div>
+                        <div class="info-row"><span>Verificare Profesională:</span><span class="badge badge-success">Aprobată</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIZUALIZARE LUCRĂTOR -->
+            <div id="view-lucrator-zone" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div><h3>Ore Lucrate (Luna Curentă)</h3><div class="num">142 ore</div></div>
+                        <i class="fa-solid fa-clock" style="font-size:2rem; color: #3b82f6;"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div><h3>Locație Obiectiv Alocat</h3><div class="num" style="font-size: 1.1rem; color: var(--primary-blue); margin-top:10px;">Magistrala Nord - Sectorul 4</div></div>
+                        <i class="fa-solid fa-location-dot" style="font-size:2rem; color: #dc2626;"></i>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-calendar-days"></i> Planul de Lucru și Sarcinile Tehnice</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Ziua</th><th>Interval Orar</th><th>Locație / Șantier</th><th>Plan Tehnic / Sarcini Teren</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Luni</td><td>08:00 - 17:00</td><td>Str. Lungă (Săpături)</td><td>Excavare șanț branșament și așezare pat de nisip</td><td><span class="badge badge-success">Realizat</span></td></tr>
+                            <tr><td>Marți</td><td>08:00 - 17:00</td><td>Str. Lungă (Montaj)</td><td>Sudură electrofuziune conductă PEHD Ø 63mm</td><td><span class="badge badge-warning">În Curs</span></td></tr>
+                            <tr><td>Miercuri</td><td>08:00 - 17:00</td><td>Parc Industrial Vest</td><td>Montare cămin prefabricat din beton pentru apometru</td><td><span class="badge badge-danger">Planificat</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIZUALIZARE ADMIN GLOBAL (ING. BORȘ ION) -->
+            <div id="view-admin-zone" style="display: none;">
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div><h3>Utilizatori Înregistrați</h3><div class="num" id="db-count-users">0</div></div>
+                        <i class="fa-solid fa-users" style="font-size:2rem; color: #3b82f6;"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div><h3>Dosare Tehnice Totale</h3><div class="num" id="db-count-contracte">0</div></div>
+                        <i class="fa-solid fa-file-invoice" style="font-size:2rem; color: #f59e0b;"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div><h3>Conducte PEHD în Stoc</h3><div class="num">1,840 m</div></div>
+                        <i class="fa-solid fa-layer-group" style="font-size:2rem; color: #16a34a;"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div><h3>Extindere Rețea Aprobată</h3><div class="num">4.2 km</div></div>
+                        <i class="fa-solid fa-map-location-dot" style="font-size:2rem; color: #a855f7;"></i>
+                    </div>
+                </section>
+
+                <!-- TABEL DOSARE TEHNICE / ȘANTIERE -->
+                <div class="table-wrapper">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-blue); font-weight: 800;"><i class="fa-solid fa-gears" style="color: var(--sidebar-active);"></i> Panou Managerial Complet: Administrare Șantiere & Avize</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Beneficiar</th>
+                                <th style="width: 20%;">Adresă Amplasament</th>
+                                <th style="width: 15%;">Tip Instalație / Configurație</th>
+                                <th style="width: 12%;">Deviz (€)</th>
+                                <th style="width: 15%;">Progres Execuție</th>
+                                <th style="width: 13%;">Status Curent Lucrare</th>
+                                <th style="width: 10%;">Estimare Predare</th>
+                                <th style="width: 5%;">Acțiune</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminEditContractsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- TABEL EVIDENȚĂ LUCRĂTORI & CREDENȚIALE (NOU, din versiunea a) -->
+                <div class="table-wrapper" style="border-top: 4px solid #3b82f6;">
+                    <h3 style="margin-bottom: 20px; color: #1e293b; font-weight: 800;"><i class="fa-solid fa-users-gear" style="color: #3b82f6;"></i> Evidență Tehnică și Credențiale Echipă Teren</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nume Lucrător</th>
+                                <th>Email Autentificare</th>
+                                <th>Parolă Cont (În Clar)</th>
+                                <th>Rol Platformă</th>
+                                <th>Specializare Șantier</th>
+                                <th>Telefon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminWorkersCredentialsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Prosperus-Cons</h4>
+                    <p>Lider regional în execuția rețelelor de utilități publice, alimentare cu apă și soluții avansate de canalizare civică.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Șantier</h4>
+                    <p><i class="fa-solid fa-location-dot"></i> Bd. Constructorilor nr. 42<br>
+                    <i class="fa-solid fa-phone"></i> +40 722 000 000<br>
+                    <i class="fa-solid fa-envelope"></i> ing.bors.ion@prosperus.md</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Program Operativ</h4>
+                    <p>Luni - Vineri: 07:00 - 17:00<br>
+                    Sâmbătă (Intervenții): 08:00 - 13:00</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Prosperus-Cons S.R.L. | Departament Infrastructură Apă Potabilă. Toate drepturile rezervate.</p>
+            </div>
+        </footer>
+    <script src="ProspWeb.js"></script>
+</body>
+</html>
