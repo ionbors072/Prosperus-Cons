@@ -18,7 +18,7 @@ app.use('/api/contracts', require('./routes/contracts'));
 app.use('/api/users', require('./routes/users'));
 
 // PORT corect pentru Render + local
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Start server
 app.listen(PORT, () => {
