@@ -1,7 +1,7 @@
-const express = require('express');
-const bcrypt  = require('bcryptjs');
-const db      = require('../config/db');
-const router  = express.Router();
+const express  = require('express');
+const bcrypt   = require('bcryptjs');
+const db       = require('../config/db');
+const router   = express.Router();
 
 router.post('/register', async (req, res) => {
     const { name, email, password, role, phone } = req.body;
@@ -14,13 +14,13 @@ router.post('/register', async (req, res) => {
     const spec = role === 'lucrator' ? 'Lucrător General' : 'N/A - Beneficiar';
 
     try {
-        const stmt = db.prepare(
-            'INSERT INTO users (name, email, password_hash, role, spec, phone) VALUES (?,?,?,?,?,?)'
+        const [result] = await db.execute(
+            'INSERT INTO users (name, email, password_hash, role, spec, phone) VALUES (?,?,?,?,?,?)',
+            [name, email, hash, role || 'client', spec, phone || null]
         );
-        const result = stmt.run(name, email, hash, role || 'client', spec, phone || null);
-        res.json({ user: { id: result.lastInsertRowid, name, email, role, spec } });
+        res.json({ user: { id: result.insertId, name, email, role, spec } });
     } catch (err) {
-        if (err.message.includes('UNIQUE'))
+        if (err.code === 'ER_DUP_ENTRY')
             return res.status(409).json({ message: 'Email deja înregistrat' });
         res.status(500).json({ message: 'Eroare server' });
     }
@@ -28,9 +28,10 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-    if (!user) return res.status(401).json({ message: 'Email sau parolă incorectă' });
+    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    if (!rows.length) return res.status(401).json({ message: 'Email sau parolă incorectă' });
 
+    const user = rows[0];
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return res.status(401).json({ message: 'Email sau parolă incorectă' });
 
