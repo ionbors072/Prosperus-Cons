@@ -16,7 +16,10 @@
             <a class="brand" onclick="checkSecretAdminAccess(event)">
                 <i class="fa-solid fa-helmet-safety"></i> Prosperus-<span>Cons</span>
             </a>
-            <ul class="nav-links">
+            <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="nav-links-list">
                 <li><a id="link-home" onclick="navigateTo('home')" class="active">Acasă</a></li>
                 <li><a id="link-servicii" onclick="navigateTo('servicii')">Servicii Apă</a></li>
                 <li><a id="link-contract" onclick="navigateTo('contract')">Ghid & Contractare</a></li>

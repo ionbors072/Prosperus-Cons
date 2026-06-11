@@ -7,6 +7,27 @@ const API = '/api';          // schimba cu URL-ul real al backend-ului tau
 
 let currentUser = null;
 
+// Restaurare sesiune dupa refresh
+const savedUser = localStorage.getItem("prospUser");
+if (savedUser) {
+    try { currentUser = JSON.parse(savedUser); } catch(e) { localStorage.removeItem("prospUser"); }
+}
+
+// HAMBURGER MENU
+function toggleMobileMenu() {
+    const btn = document.getElementById("hamburger-btn");
+    const nav = document.getElementById("nav-links-list");
+    btn.classList.toggle("open");
+    nav.classList.toggle("mobile-open");
+}
+
+function closeMobileMenu() {
+    const btn = document.getElementById("hamburger-btn");
+    const nav = document.getElementById("nav-links-list");
+    if (btn) btn.classList.remove("open");
+    if (nav) nav.classList.remove("mobile-open");
+}
+
 // ============================================================
 //  UTILITARE API
 // ============================================================
@@ -71,6 +92,7 @@ function handleAuthNavButtonClick() {
 }
 
 function navigateTo(pageId) {
+    closeMobileMenu();
     document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-page'));
     document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
     const section = document.getElementById(`page-${pageId}`);
@@ -213,6 +235,7 @@ async function handleUserLogin(e) {
 }
 
 function syncUIAfterLogin() {
+    localStorage.setItem("prospUser", JSON.stringify(currentUser));
     document.getElementById('nav-auth-text').innerText = 'Deschide Panou';
     checkContractSecurityState();
 }
@@ -449,6 +472,7 @@ async function adminSaveChanges(index, contractId) {
 // ============================================================
 
 function logoutSession() {
+    localStorage.removeItem("prospUser");
     currentUser = null;
     document.getElementById('nav-auth-text').innerText           = 'Contul Meu';
     document.getElementById('private-dashboard').style.display   = 'none';
@@ -474,5 +498,11 @@ document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey && e.key === 'Q') {
         const area = document.getElementById('quick-login-area');
         area.style.display = area.style.display === 'none' ? 'block' : 'none';
+    }
+});
+// Restaurare UI dupa refresh daca exista sesiune salvata
+document.addEventListener('DOMContentLoaded', function() {
+    if (currentUser) {
+        syncUIAfterLogin();
     }
 });
