@@ -6,27 +6,32 @@
 const API = '/api';          // schimba cu URL-ul real al backend-ului tau
 
 let currentUser = null;
+// ── Restaurare sesiune dupa refresh ──
+const _saved = localStorage.getItem('prospUser');
+if (_saved) { try { currentUser = JSON.parse(_saved); } catch(e) { localStorage.removeItem('prospUser'); } }
 
-// Restaurare sesiune dupa refresh
-const savedUser = localStorage.getItem("prospUser");
-if (savedUser) {
-    try { currentUser = JSON.parse(savedUser); } catch(e) { localStorage.removeItem("prospUser"); }
-}
-
-// HAMBURGER MENU
+// ── Hamburger menu ──
 function toggleMobileMenu() {
-    const btn = document.getElementById("hamburger-btn");
-    const nav = document.getElementById("nav-links-list");
-    btn.classList.toggle("open");
-    nav.classList.toggle("mobile-open");
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links-list');
+    if (!btn || !nav) return;
+    btn.classList.toggle('open');
+    nav.classList.toggle('mobile-open');
+}
+function closeMobileMenu() {
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links-list');
+    if (btn) btn.classList.remove('open');
+    if (nav) nav.classList.remove('mobile-open');
 }
 
-function closeMobileMenu() {
-    const btn = document.getElementById("hamburger-btn");
-    const nav = document.getElementById("nav-links-list");
-    if (btn) btn.classList.remove("open");
-    if (nav) nav.classList.remove("mobile-open");
+// ── Inapoi la site (fara logout) ──
+function goBackToSite() {
+    document.getElementById('private-dashboard').style.display = 'none';
+    document.getElementById('public-platform').style.display  = 'block';
+    navigateTo('home');
 }
+
 
 // ============================================================
 //  UTILITARE API
@@ -235,8 +240,8 @@ async function handleUserLogin(e) {
 }
 
 function syncUIAfterLogin() {
-    localStorage.setItem("prospUser", JSON.stringify(currentUser));
     document.getElementById('nav-auth-text').innerText = 'Deschide Panou';
+    localStorage.setItem('prospUser', JSON.stringify(currentUser));
     checkContractSecurityState();
 }
 
@@ -472,7 +477,7 @@ async function adminSaveChanges(index, contractId) {
 // ============================================================
 
 function logoutSession() {
-    localStorage.removeItem("prospUser");
+    localStorage.removeItem('prospUser');
     currentUser = null;
     document.getElementById('nav-auth-text').innerText           = 'Contul Meu';
     document.getElementById('private-dashboard').style.display   = 'none';
@@ -500,9 +505,7 @@ document.addEventListener('keydown', function(e) {
         area.style.display = area.style.display === 'none' ? 'block' : 'none';
     }
 });
-// Restaurare UI dupa refresh daca exista sesiune salvata
+// Restaurare UI dupa refresh
 document.addEventListener('DOMContentLoaded', function() {
-    if (currentUser) {
-        syncUIAfterLogin();
-    }
+    if (currentUser) { syncUIAfterLogin(); }
 });

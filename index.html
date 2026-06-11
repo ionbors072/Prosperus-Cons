@@ -16,9 +16,7 @@
             <a class="brand" onclick="checkSecretAdminAccess(event)">
                 <i class="fa-solid fa-helmet-safety"></i> Prosperus-<span>Cons</span>
             </a>
-            <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu">
-                <span></span><span></span><span></span>
-            </button>
+            <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu"><span></span><span></span><span></span></button>
             <ul class="nav-links" id="nav-links-list">
                 <li><a id="link-home" onclick="navigateTo('home')" class="active">Acasă</a></li>
                 <li><a id="link-servicii" onclick="navigateTo('servicii')">Servicii Apă</a></li>
@@ -201,7 +199,7 @@
                     <li class="active"><a href="#"><i class="fa-solid fa-chart-line"></i> Monitorizare Panou</a></li>
                 </ul>
             </div>
-            <div style="padding: 20px;"><button class="btn-action btn-orange" style="width: 100%; justify-content: center;" onclick="logoutSession()"><i class="fa-solid fa-power-off"></i> Deconectare</button></div>
+            <div class="sidebar-actions"><button class="btn-action btn-blue" style="width: 100%; justify-content: center; margin-bottom: 10px;" onclick="goBackToSite()"><i class="fa-solid fa-arrow-left"></i> Înapoi la Site</button><button class="btn-action btn-logout" style="width: 100%; justify-content: center;" onclick="logoutSession()"><i class="fa-solid fa-power-off"></i> Deconectare</button></div>
         </aside>
 
         <main class="dashboard-main">
