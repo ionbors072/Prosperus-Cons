@@ -128,7 +128,6 @@ function navigateTo(pageId) {
     }
     const link = document.getElementById(`link-${pageId}`);
     if (link) link.classList.add('active');
-    if (pageId === 'contract') { checkContractSecurityState(); updatePriceCalculator(); }
     if (pageId === 'auth') updateAuthPageUI();
 }
 
