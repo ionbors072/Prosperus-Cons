@@ -22,8 +22,8 @@
                 <li><a id="link-home" onclick="navigateTo('home')" class="active">Acasă</a></li>
                 <li><a id="link-servicii" onclick="navigateTo('servicii')">Servicii Apă</a></li>
                 <li><a id="link-despre" onclick="navigateTo('despre')">Despre Noi</a></li>
-                <li><a id="link-ghid" onclick="navigateTo('ghid')">Ghid & Contractare</a></li>
                 <li><a id="link-contact" onclick="navigateTo('contact')">Contact</a></li>
+                <li><a id="link-contract" onclick="navigateTo('contract')">Ghid & Contractare</a></li>
                 <li><a id="link-auth" onclick="handleAuthNavButtonClick()" class="btn-nav-action"><i class="fa-solid fa-user-gear"></i> <span id="nav-auth-text">Contul Meu</span></a></li>
             </ul>
         </nav>
@@ -33,7 +33,7 @@
             <div class="hero-banner scroll-animate">
                 <h1>Infrastructură Hidrotehnică și <br><span>Branșamente Profesionale</span></h1>
                 <p>Proiectăm, executăm excavări și punem în funcțiune rețele magistrale de apă potabilă și sisteme industriale de canalizare cu autorizație completă.</p>
-                <button class="btn-action btn-orange" onclick="navigateTo('ghid')">Vezi Ghidul de Contractare <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-action btn-orange" onclick="navigateTo('contract')">Iniciază Proiect Online <i class="fa-solid fa-arrow-right"></i></button>
             </div>
 
             <div class="container">
@@ -130,70 +130,73 @@
             </div>
         </section>
 
-        <!-- GHID & CONTRACTARE - fără formular de contract -->
-        <section id="page-ghid" class="page-section">
-            <h2 class="section-heading scroll-animate">Ghid & <span>Contractare</span></h2>
-            <p class="section-subtitle scroll-animate">Pagină informativă pentru client: pașii necesari înainte de începerea unei lucrări de branșament sau infrastructură.</p>
-
-            <div class="workflow-container" style="margin-bottom:40px;">
-                <div class="workflow-step scroll-animate"><div class="workflow-num">01</div><h4>Solicitare inițială</h4><p>Clientul transmite adresa obiectivului, tipul lucrării și datele de contact. Scopul este stabilirea unei discuții tehnice preliminare.</p></div>
-                <div class="workflow-step scroll-animate"><div class="workflow-num">02</div><h4>Verificare teren</h4><p>Se analizează traseul, accesul utilajelor, existența rețelelor subterane și posibilitatea conectării la magistrala disponibilă.</p></div>
-                <div class="workflow-step scroll-animate"><div class="workflow-num">03</div><h4>Deviz orientativ</h4><p>Costul se estimează în funcție de lungimea traseului, tipul instalației, materialele folosite și complexitatea săpăturii.</p></div>
-                <div class="workflow-step scroll-animate"><div class="workflow-num">04</div><h4>Avizare</h4><p>După acceptarea devizului, se pregătesc documentele tehnice și se solicită avizele necesare de la instituțiile competente.</p></div>
-                <div class="workflow-step scroll-animate"><div class="workflow-num">05</div><h4>Execuție lucrare</h4><p>Echipa tehnică realizează săpătura, montajul conductei, conectarea, izolarea și verificarea instalației.</p></div>
-                <div class="workflow-step scroll-animate"><div class="workflow-num">06</div><h4>Recepție finală</h4><p>Lucrarea se verifică prin probe tehnice, apoi se predă beneficiarului cu informațiile necesare pentru exploatare.</p></div>
-            </div>
-
-            <div class="grid-3" style="margin-bottom:40px;">
-                <div class="pub-card scroll-animate">
-                    <i class="fa-solid fa-folder-open"></i>
-                    <h3>Documente necesare</h3>
-                    <p>Act de identitate sau date juridice, adresă obiectiv, schiță amplasament, acte de proprietate și informații despre utilitățile existente.</p>
+        <!-- GHID & CONTRACTARE -->
+        <section id="page-contract" class="page-section">
+            <h2 class="section-heading">Configurator Proiect Tehnic Online</h2>
+            <p class="section-subtitle">Calculează devizul și deschide dosarul tehnic direct din platformă.</p>
+            <div class="contract-card">
+                <div id="contract-security-notice" class="lock-notice">
+                    <i class="fa-solid fa-lock"></i> Neautorizat! Trebuie să fii înregistrat sau conectat într-un cont pentru a putea transmite un dosar tehnic valid.
                 </div>
-                <div class="pub-card scroll-animate">
-                    <i class="fa-solid fa-calculator"></i>
-                    <h3>Calcul orientativ</h3>
-                    <p>Exemplu de estimare: apă potabilă — 50 EUR/m, canalizare — 65 EUR/m, pachet apă + canalizare — 100 EUR/m. Valorile sunt orientative.</p>
+                <!-- CALCULATOR DINAMIC #4 -->
+                <div class="price-breakdown-box" id="price-breakdown" style="display:none; background:#f0fdf4; padding:15px; border-radius:8px; margin-bottom:15px; border:1px dashed var(--success); font-size:0.9rem;">
+                    <strong style="color:#15803d;"><i class="fa-solid fa-info-circle"></i> Detalii calcul:</strong>
+                    <span id="price-formula-text" style="color:var(--text-muted); margin-left:8px;"></span>
                 </div>
-                <div class="pub-card scroll-animate">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <h3>Clarificare importantă</h3>
-                    <p>Această pagină nu creează automat un contract. Pentru inițierea reală a dosarului, clientul trebuie să contacteze compania.</p>
-                </div>
-            </div>
-
-            <div class="contract-card scroll-animate" style="max-width:900px; text-align:center;">
-                <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:12px;">Vrei să începi o lucrare?</h3>
-                <p style="color:var(--text-muted); line-height:1.7; margin-bottom:22px;">Trimite datele prin pagina de contact. Compania poate verifica informațiile, poate estima lucrarea și poate crea ulterior dosarul tehnic în sistem.</p>
-                <button class="btn-action btn-orange" onclick="navigateTo('contact')"><i class="fa-solid fa-envelope"></i> Mergi la Contact</button>
+                <form id="publicContractForm" onsubmit="submitOnlineContract(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div class="form-control"><label>Nume Beneficiar</label><input type="text" id="c_nume" required></div>
+                        <div class="form-control"><label>Cod Personal / CUI</label><input type="text" id="c_id" required></div>
+                    </div>
+                    <div class="form-control"><label>Adresă Obiectiv / Șantier</label><input type="text" id="c_adresa" required></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div class="form-control">
+                            <label>Tip Lucrare</label>
+                            <select id="c_tip" onchange="updatePriceCalculator()">
+                                <option value="apa">Branșament Apă Potabilă Standard (50 EUR/m)</option>
+                                <option value="canal">Canalizare Gravitațională (65 EUR/m)</option>
+                                <option value="pachet">Pachet Complet Apă + Canalizare (100 EUR/m)</option>
+                            </select>
+                        </div>
+                        <div class="form-control"><label>Lungime Traseu (Metri)</label><input type="number" id="c_lungime" value="12" min="1" oninput="updatePriceCalculator()"></div>
+                    </div>
+                    <div class="calc-output-box">
+                        <p style="font-weight:700; color:#15803d;"><i class="fa-solid fa-calculator"></i> Deviz Estimativ Materiale & Manoperă:</p>
+                        <span id="c_total_pret">600 EUR</span>
+                    </div>
+                    <button type="submit" class="btn-action btn-orange" style="width: 100%; justify-content: center;"><i class="fa-solid fa-file-contract"></i> Transmite Fișa la Departamentul Tehnic</button>
+                </form>
             </div>
         </section>
 
-        <!-- CONTACT -->
+
+        <!-- CONTACT #12 -->
         <section id="page-contact" class="page-section">
             <h2 class="section-heading scroll-animate">Contact <span>Prosperus-Cons</span></h2>
-            <p class="section-subtitle scroll-animate">Date de contact și locația juridică publică a companiei.</p>
+            <p class="section-subtitle scroll-animate">Date de contact și localizare pentru companie.</p>
 
             <div class="about-map-grid scroll-animate">
                 <div class="about-text-block">
-                    <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Date de contact</h3>
-                    <p style="color:var(--text-muted); line-height:1.9; margin-bottom:18px;">
-                        <i class="fa-solid fa-building" style="color:var(--sidebar-active);"></i> <strong>PROSPERUS-CONS S.R.L.</strong><br>
-                        <i class="fa-solid fa-id-card" style="color:var(--sidebar-active);"></i> IDNO: 1011600042056<br>
-                        <i class="fa-solid fa-location-dot" style="color:var(--sidebar-active);"></i> mun. Chișinău, s. Hulboaca, str. Alba-Iulia 5, MD-2093<br>
-                        <i class="fa-solid fa-phone" style="color:var(--sidebar-active);"></i> (060) 10-03-15<br>
-                        <i class="fa-solid fa-envelope" style="color:var(--sidebar-active);"></i> prosperuscons@gmail.com
+                    <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Date publice companie</h3>
+                    <p style="color:var(--text-muted); line-height:1.8; margin-bottom:15px;">
+                        <strong>Denumire:</strong> PROSPERUS-CONS S.R.L.<br>
+                        <strong>IDNO:</strong> 1011600042056<br>
+                        <strong>Adresă juridică:</strong> mun. Chișinău, s. Hulboaca, str. Alba-Iulia 5, MD-2093<br>
+                        <strong>Telefon:</strong> (060) 10-03-15<br>
+                        <strong>Email:</strong> prosperuscons@gmail.com
                     </p>
-                    <div class="lock-notice" style="margin-bottom:0;">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        Pentru proiectul de practică, contactul este prezentat ca secțiune informativă. Trimiterea automată a mesajelor nu este activată.
-                    </div>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        În proiect, această secțiune poate fi folosită pentru prezentarea firmei, localizarea pe hartă și accesul rapid la informațiile juridice esențiale.
+                    </p>
                 </div>
+
                 <div class="map-container">
-                    <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:12px;"><i class="fa-solid fa-map-location-dot" style="color:var(--sidebar-active);"></i> Hartă Google Maps</h3>
+                    <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:12px;">
+                        <i class="fa-solid fa-map-location-dot" style="color:var(--sidebar-active);"></i> Locație pe hartă
+                    </h3>
                     <iframe
                         src="https://www.google.com/maps?q=mun.%20Chi%C8%99in%C4%83u%2C%20s.%20Hulboaca%2C%20str.%20Alba-Iulia%205%2C%20MD-2093&output=embed"
-                        width="100%" height="320" style="border:0; border-radius:8px;" allowfullscreen="" loading="lazy">
+                        width="100%" height="340" style="border:0; border-radius:8px;" allowfullscreen="" loading="lazy">
                     </iframe>
                 </div>
             </div>
@@ -284,13 +287,13 @@
                 <div id="client-no-contract" style="display:none; text-align:center; padding:40px; background:white; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;">
                     <i class="fa-solid fa-file-circle-plus" style="font-size:3rem; color:var(--sidebar-active); margin-bottom:15px;"></i>
                     <h3 style="margin-bottom:10px;">Nu ai niciun dosar tehnic activ</h3>
-                    <p style="color:var(--text-muted); margin-bottom:20px;">Nu există dosare tehnice asociate contului. Pentru un dosar nou, contactează compania.</p>
-                    <button class="btn-action btn-orange" onclick="goBackToSite(); setTimeout(()=>navigateTo('ghid'),100)"><i class="fa-solid fa-list-check"></i> Vezi Ghidul de Contractare</button>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Inițiază un proiect prin completarea formularului de contractare.</p>
+                    <button class="btn-action btn-orange" onclick="goBackToSite(); setTimeout(()=>navigateTo('contract'),100)"><i class="fa-solid fa-plus"></i> Inițiază Dosar Nou</button>
                 </div>
                 <div id="client-contracts-list"></div>
                 <div style="text-align:center; margin-top:10px;">
-                    <button class="btn-action btn-blue" onclick="goBackToSite(); setTimeout(()=>navigateTo('ghid'),100)" style="font-size:0.85rem; padding:8px 16px;">
-                        <i class="fa-solid fa-list-check"></i> Vezi Pașii de Contractare
+                    <button class="btn-action btn-blue" onclick="goBackToSite(); setTimeout(()=>navigateTo('contract'),100)" style="font-size:0.85rem; padding:8px 16px;">
+                        <i class="fa-solid fa-plus"></i> Adaugă Dosar Tehnic Nou
                     </button>
                 </div>
             </div>
