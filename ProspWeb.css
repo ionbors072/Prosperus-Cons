@@ -95,7 +95,7 @@
         .calc-output-box { background: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--success); }
         .calc-output-box span { font-size: 1.8rem; font-weight: 800; color: var(--success); }
 
-        footer { background: var(--primary-blue); color: white; padding: 60px 10% 20px; margin-top: 80px; }
+        footer { background: var(--primary-blue); color: white; padding: 60px 10% 20px; margin-top: 0; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
         .footer-col h4 { margin-bottom: 20px; color: var(--sidebar-active); }
         .footer-bottom { border-top: 1px solid #334155; padding-top: 20px; text-align: center; font-size: 0.85rem; color: #64748b; }
