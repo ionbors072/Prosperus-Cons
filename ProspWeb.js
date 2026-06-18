@@ -72,6 +72,16 @@ async function apiPatch(endpoint, body) {
     return res.json();
 }
 
+async function apiDelete(endpoint) {
+    const res = await fetch(API + endpoint, { method: 'DELETE' });
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: 'Eroare server' }));
+        throw new Error(err.message || 'Eroare necunoscuta');
+    }
+    return res.json();
+}
+
+
 // ============================================================
 //  SECURITATE FORMULAR CONTRACT
 // ============================================================
@@ -79,6 +89,9 @@ async function apiPatch(endpoint, body) {
 function checkContractSecurityState() {
     const notice = document.getElementById('contract-security-notice');
     const formInputs = document.querySelectorAll('#publicContractForm input, #publicContractForm select, #publicContractForm button');
+
+    if (!notice || !formInputs.length) return;
+
     if (currentUser) {
         notice.style.display = 'none';
         formInputs.forEach(i => i.disabled = false);
@@ -86,6 +99,8 @@ function checkContractSecurityState() {
         notice.style.display = 'flex';
         formInputs.forEach(i => i.disabled = true);
     }
+
+    updatePriceCalculator();
 }
 
 // ============================================================
@@ -101,10 +116,19 @@ function navigateTo(pageId) {
     document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-page'));
     document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
     const section = document.getElementById(`page-${pageId}`);
-    if (section) section.classList.add('active-page');
+
+    if (section) {
+    section.classList.add('active-page');
+
+    section.querySelectorAll('.scroll-animate').forEach(el => {
+        setTimeout(() => {
+            el.classList.add('animate-visible');
+        }, 50);
+    });
+    }
     const link = document.getElementById(`link-${pageId}`);
     if (link) link.classList.add('active');
-    if (pageId === 'contract') checkContractSecurityState();
+    if (pageId === 'contract') { checkContractSecurityState(); updatePriceCalculator(); }
     if (pageId === 'auth') updateAuthPageUI();
 }
 
@@ -162,10 +186,31 @@ async function checkSecretAdminAccess(event) {
 // ============================================================
 
 function updatePriceCalculator() {
-    const tip = document.getElementById('c_tip').value;
-    const lungime = parseFloat(document.getElementById('c_lungime').value) || 0;
-    const costPerMetru = tip === 'canal' ? 65 : (tip === 'pachet' ? 100 : 50);
-    document.getElementById('c_total_pret').innerText = `${(lungime * costPerMetru) + 740} EUR`;
+    const tipEl = document.getElementById('c_tip');
+    const lungimeEl = document.getElementById('c_lungime');
+    const totalEl = document.getElementById('c_total_pret');
+    const breakdown = document.getElementById('price-breakdown');
+    const formulaText = document.getElementById('price-formula-text');
+
+    if (!tipEl || !lungimeEl || !totalEl) return;
+
+    const prices = {
+        apa: 50,
+        canal: 65,
+        pachet: 100
+    };
+
+    const tip = tipEl.value;
+    const lungime = Math.max(parseFloat(lungimeEl.value) || 0, 0);
+    const costPerMetru = prices[tip] || prices.apa;
+    const total = lungime * costPerMetru;
+
+    totalEl.innerText = `${total.toFixed(0)} EUR`;
+
+    if (breakdown && formulaText) {
+        breakdown.style.display = 'block';
+        formulaText.innerText = `${lungime} m × ${costPerMetru} EUR/m = ${total.toFixed(0)} EUR`;
+    }
 }
 
 // ============================================================
@@ -198,6 +243,17 @@ async function handleUserRegister(e) {
     const role  = document.getElementById('reg_role').value;
     const pass  = document.getElementById('reg_pass').value;
     const phone = document.getElementById('reg_phone').value.trim();
+
+    if (!validateEmailLive(document.getElementById('reg_email'))) {
+        alert('Email invalid!');
+        return;
+    }
+
+    if (!validatePasswordLive(document.getElementById('reg_pass'))) {
+        alert('Parola trebuie să aibă minim 8 caractere!');
+        return;
+    }
+
     if (phone && !/^\+?[0-9\s\-]{7,20}$/.test(phone)) {
     alert('Număr de telefon invalid! Exemplu corect: +373 69 123 456');
     return;
@@ -331,6 +387,8 @@ function openDashboard() {
 // ============================================================
 
 async function buildDashboardView() {
+    if (!currentUser) return;
+
     document.getElementById('db-user-name').innerText  = currentUser.name;
     document.getElementById('db-user-role').innerText  = currentUser.role.toUpperCase();
     document.getElementById('db-user-subtitle').innerText = '-';
@@ -341,29 +399,14 @@ async function buildDashboardView() {
 
     if (currentUser.role === 'client') {
         document.getElementById('view-client-zone').style.display = 'block';
-        document.getElementById('db-user-subtitle').innerText = 'Fișa de monitorizare a conexiunii la utilități';
+        document.getElementById('db-user-subtitle').innerText = 'Fișe de monitorizare pentru dosarele tale tehnice';
 
         try {
-            // GET /api/contracts?client_id=X
-            // Serverul face: SELECT * FROM contracts WHERE client_id = X LIMIT 1
-            const data = await apiGet(`/contracts?client_id=${currentUser.id}`);
-            const c = data.contracts[0];
-            if (c) {
-                document.getElementById('client-progress-bar').style.width = c.progress + '%';
-                document.getElementById('info-det-nume').innerText   = c.name;
-                document.getElementById('info-det-adresa').innerText = c.address;
-                document.getElementById('info-det-tip').innerText    = c.type;
-                document.getElementById('info-det-pret').innerText   = c.price;
-                document.getElementById('info-det-status').innerText = c.status;
-                document.getElementById('info-det-eta').innerText    = c.eta;
-                const p = parseInt(c.progress);
-                document.getElementById('step-1').className = p >= 20 ? 'active-step' : '';
-                document.getElementById('step-2').className = p >= 45 ? 'active-step' : '';
-                document.getElementById('step-3').className = p >= 70 ? 'active-step' : '';
-                document.getElementById('step-4').className = p >= 95 ? 'active-step' : '';
-            }
+            const data = await apiGet(`/contracts?client_id=${encodeURIComponent(currentUser.id)}`);
+            renderClientContracts(data.contracts || []);
         } catch (err) {
-            console.error('Eroare incarcare contract client:', err.message);
+            console.error('Eroare incarcare contracte client:', err.message);
+            renderClientContracts([]);
         }
     }
     else if (currentUser.role === 'lucrator') {
@@ -375,8 +418,6 @@ async function buildDashboardView() {
         document.getElementById('db-user-subtitle').innerText = 'Sistem centralizat de management al resurselor și fluxurilor tehnice';
 
         try {
-            // GET /api/users       → SELECT * FROM users
-            // GET /api/contracts   → SELECT * FROM contracts
             const [usersData, contractsData] = await Promise.all([
                 apiGet('/users'),
                 apiGet('/contracts')
@@ -388,9 +429,13 @@ async function buildDashboardView() {
             document.getElementById('db-count-users').innerText     = allUsers.length;
             document.getElementById('db-count-contracte').innerText = allContracts.length;
 
-            // 1. Tabel dosare/santiere (editabil)
             const editTableBody = document.getElementById('adminEditContractsTableBody');
             editTableBody.innerHTML = '';
+
+            if (!allContracts.length) {
+                editTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:24px;">Nu există dosare tehnice în baza de date.</td></tr>';
+            }
+
             allContracts.forEach((c, index) => {
                 editTableBody.innerHTML += `
                     <tr>
@@ -400,8 +445,8 @@ async function buildDashboardView() {
                         <td><input type="text" id="adm-price-${index}" value="${escHtml(c.price)}" class="admin-inline-input" style="color:var(--success); font-weight:700;"></td>
                         <td>
                             <div class="admin-progress-container">
-                                <input type="range" id="adm-prog-${index}" value="${c.progress}" min="0" max="100" step="5" style="width:90px;" oninput="document.getElementById('prog-val-${index}').innerText = this.value + '%'">
-                                <span class="admin-progress-text" id="prog-val-${index}">${c.progress}%</span>
+                                <input type="range" id="adm-prog-${index}" value="${Number(c.progress) || 0}" min="0" max="100" step="5" style="width:90px;" oninput="document.getElementById('prog-val-${index}').innerText = this.value + '%'">
+                                <span class="admin-progress-text" id="prog-val-${index}">${Number(c.progress) || 0}%</span>
                             </div>
                         </td>
                         <td>
@@ -416,34 +461,114 @@ async function buildDashboardView() {
                         </td>
                         <td><input type="text" id="adm-eta-${index}" value="${escHtml(c.eta)}" class="admin-inline-input"></td>
                         <td>
-                            <button class="btn-table-save" onclick="adminSaveChanges(${index}, ${c.id})">
-                                <i class="fa-solid fa-floppy-disk"></i> Salvează
-                            </button>
+                            <div class="admin-actions">
+                                <button class="btn-table-save" onclick="adminSaveChanges(${index}, ${c.id})">
+                                    <i class="fa-solid fa-floppy-disk"></i> Salvează
+                                </button>
+                                <button class="btn-table-delete" onclick="adminDeleteContract(${c.id})">
+                                    <i class="fa-solid fa-trash"></i> Șterge
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             });
 
-            // 2. Tabel credentiale lucratori
             const workersTableBody = document.getElementById('adminWorkersCredentialsTableBody');
             workersTableBody.innerHTML = '';
-            allUsers.filter(u => u.role === 'lucrator').forEach(w => {
+
+            const workers = allUsers.filter(u => u.role === 'lucrator');
+            if (!workers.length) {
+                workersTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:24px;">Nu există lucrători înregistrați.</td></tr>';
+            }
+
+            workers.forEach(w => {
                 workersTableBody.innerHTML += `
                     <tr>
-                            <td><strong style="color: var(--primary-blue);"><i class="fa-solid fa-user-gear"></i> ${escHtml(w.name)}</strong></td>
-                            <td><code style="background: #f1f5f9; padding: 4px 8px; border-radius:4px; font-weight:600;">${escHtml(w.email)}</code></td>
-                            <td><span style="font-family: monospace; color: var(--danger); font-weight: 700; background: #fee2e2; padding: 3px 8px; border-radius:4px;">••••••••</span></td>
-                            <td><span class="badge badge-blue">${w.role.toUpperCase()}</span></td>
-                            <td><span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">${escHtml(w.spec || '')}</span></td>
-                            <td><i class="fa-solid fa-phone" style="color: var(--success); margin-right:5px;"></i>${escHtml(w.phone || '—')}</td>
+                        <td><strong style="color: var(--primary-blue);"><i class="fa-solid fa-user-gear"></i> ${escHtml(w.name)}</strong></td>
+                        <td><code style="background: #f1f5f9; padding: 4px 8px; border-radius:4px; font-weight:600;">${escHtml(w.email)}</code></td>
+                        <td><span style="font-family: monospace; color: var(--danger); font-weight: 700; background: #fee2e2; padding: 3px 8px; border-radius:4px;">••••••••</span></td>
+                        <td><span class="badge badge-blue">${escHtml(String(w.role || '').toUpperCase())}</span></td>
+                        <td><span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">${escHtml(w.spec || '')}</span></td>
+                        <td><i class="fa-solid fa-phone" style="color: var(--success); margin-right:5px;"></i>${escHtml(w.phone || '—')}</td>
                     </tr>
                 `;
-                });
+            });
 
         } catch (err) {
             console.error('Eroare incarcare date admin:', err.message);
+            document.getElementById('db-count-users').innerText = '0';
+            document.getElementById('db-count-contracte').innerText = '0';
+            const editTableBody = document.getElementById('adminEditContractsTableBody');
+            if (editTableBody) {
+                editTableBody.innerHTML = `<tr><td colspan="8"><div class="admin-error-box">Eroare la încărcarea datelor din MySQL/Railway: ${escHtml(err.message)}</div></td></tr>`;
+            }
         }
     }
+}
+
+function renderClientContracts(contracts) {
+    const noContract = document.getElementById('client-no-contract');
+    const list = document.getElementById('client-contracts-list');
+
+    if (!list || !noContract) return;
+
+    list.innerHTML = '';
+
+    if (!contracts.length) {
+        noContract.style.display = 'block';
+        return;
+    }
+
+    noContract.style.display = 'none';
+
+    contracts.forEach((c, index) => {
+        const progress = Math.max(0, Math.min(100, parseInt(c.progress) || 0));
+        list.innerHTML += `
+            <article class="client-contract-card">
+                <div class="client-contract-head">
+                    <div>
+                        <h3>Dosar tehnic #${escHtml(c.id || index + 1)} — ${escHtml(c.name)}</h3>
+                        <div class="client-contract-meta">
+                            <i class="fa-solid fa-location-dot"></i> ${escHtml(c.address || 'Adresă necompletată')}
+                        </div>
+                    </div>
+                    <span class="badge badge-blue">${progress}%</span>
+                </div>
+
+                <div class="client-progress-line">
+                    <div class="client-progress-fill" style="width:${progress}%"></div>
+                </div>
+
+                <div class="client-contract-grid">
+                    <div class="client-contract-field">
+                        <span>Beneficiar contract</span>
+                        <strong>${escHtml(c.name || '—')}</strong>
+                    </div>
+                    <div class="client-contract-field">
+                        <span>Adresă</span>
+                        <strong>${escHtml(c.address || '—')}</strong>
+                    </div>
+                    <div class="client-contract-field">
+                        <span>Tip lucrare</span>
+                        <strong>${escHtml(c.type || '—')}</strong>
+                    </div>
+                    <div class="client-contract-field">
+                        <span>Deviz</span>
+                        <strong>${escHtml(c.price || '—')}</strong>
+                    </div>
+                    <div class="client-contract-field">
+                        <span>Status</span>
+                        <strong>${escHtml(c.status || '—')}</strong>
+                    </div>
+                    <div class="client-contract-field">
+                        <span>Predare estimată</span>
+                        <strong>${escHtml(c.eta || '—')}</strong>
+                    </div>
+                </div>
+            </article>
+        `;
+    });
 }
 
 // ============================================================
@@ -471,6 +596,19 @@ async function adminSaveChanges(index, contractId) {
         alert('Eroare la salvare: ' + err.message);
     }
 }
+
+async function adminDeleteContract(contractId) {
+    if (!confirm('Sigur vrei să ștergi acest dosar tehnic? Acțiunea nu poate fi anulată.')) return;
+
+    try {
+        await apiDelete(`/contracts/${contractId}`);
+        alert('Dosarul tehnic a fost șters.');
+        buildDashboardView();
+    } catch (err) {
+        alert('Eroare la ștergere: ' + err.message);
+    }
+}
+
 
 // ============================================================
 //  LOGOUT
@@ -508,4 +646,117 @@ document.addEventListener('keydown', function(e) {
 // Restaurare UI dupa refresh
 document.addEventListener('DOMContentLoaded', function() {
     if (currentUser) { syncUIAfterLogin(); }
+});
+function initScrollAnimations() {
+    const elements = document.querySelectorAll('.scroll-animate');
+
+    if (!elements.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        elements.forEach(el => el.classList.add('animate-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    elements.forEach(el => observer.observe(el));
+}
+
+document.addEventListener('DOMContentLoaded', initScrollAnimations);
+
+// ============================================================
+//  VALIDARE CLIENT-SIDE IN TIMP REAL
+// ============================================================
+
+function validateEmailLive(input) {
+    const hint = document.getElementById('email-hint');
+    if (!hint) return true;
+
+    const value = input.value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+
+    hint.className = 'field-hint ' + (valid ? 'hint-ok' : 'hint-err');
+    hint.textContent = value.length === 0
+        ? ''
+        : (valid ? 'Email valid.' : 'Email invalid. Exemplu: nume@email.com');
+
+    return valid;
+}
+
+function validatePasswordLive(input) {
+    const hint = document.getElementById('pass-hint');
+    const fill = document.getElementById('pass-strength-fill');
+    if (!hint || !fill) return true;
+
+    const pass = input.value;
+    let score = 0;
+
+    if (pass.length >= 8) score++;
+    if (/[A-ZĂÂÎȘȚ]/.test(pass)) score++;
+    if (/[0-9]/.test(pass)) score++;
+    if (/[^A-Za-z0-9ĂÂÎȘȚăâîșț]/.test(pass)) score++;
+
+    const width = [0, 30, 55, 80, 100][score];
+    fill.style.width = width + '%';
+
+    if (score <= 1) {
+        fill.style.background = '#dc2626';
+        hint.className = 'field-hint hint-err';
+        hint.textContent = 'Parola trebuie să aibă minim 8 caractere.';
+    } else if (score === 2) {
+        fill.style.background = '#f59e0b';
+        hint.className = 'field-hint hint-err';
+        hint.textContent = 'Parolă acceptabilă, dar slabă.';
+    } else {
+        fill.style.background = '#16a34a';
+        hint.className = 'field-hint hint-ok';
+        hint.textContent = 'Parolă bună.';
+    }
+
+    return pass.length >= 8;
+}
+
+// ============================================================
+//  SCROLL TO TOP BUTTON
+// ============================================================
+
+function initScrollTopButton() {
+    const btn = document.getElementById('scroll-top-btn');
+    if (!btn) return;
+
+    function toggleScrollButton() {
+        btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    }
+
+    window.addEventListener('scroll', toggleScrollButton);
+    toggleScrollButton();
+}
+
+
+// ============================================================
+//  BOOTSTRAP UI
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (currentUser) {
+        syncUIAfterLogin();
+    }
+
+    updatePriceCalculator();
+    initScrollAnimations();
+    initScrollTopButton();
+
+    document.querySelectorAll('.page-section.active-page .scroll-animate').forEach(el => {
+        el.classList.add('animate-visible');
+    });
 });
